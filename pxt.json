@@ -1,0 +1,19 @@
+{
+    "name": "pxt-ovobot-modules",
+    "version": "0.0.0",
+    "description": "",
+    "dependencies": {
+        "device": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts",
+        "_locales/zh/pxt-ovobot-modules-strings.json",
+        "_locales/zh/pxt-ovobot-modules-jsdoc-strings.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": false,
+    "preferredEditor": "tsprj"
+}
