@@ -223,22 +223,6 @@ namespace ovobotModules {
         return distance;
     }
 
-    // /**
-    //  * TODO: 控制马达PWM输出。
-    //  */
-    // //% block="control motor %module  output %speed"
-    // //% speed.min=-255 speed.max=255
-    // //% weight=65
-    // export function controlMotorOutput(module: ModuleIndex, speed: number) {
-    //     let buf = pins.createBuffer(8);
-    //     buf[0] = 0x00;
-    //     buf[1] = speed > 0 ? 0 : 1;
-    //     buf[2] = Math.abs(speed)
-
-    //     pins.i2cWriteBuffer(MOTOR_ADDRESS + module, buf);
-    // }
-
-
     /**
      * TODO: 控制舵机旋转。
      */
@@ -277,7 +261,7 @@ namespace ovobotModules {
             neopixelBuf[startPos + 1] = ((selectColors[color] >> 16) & 0xff) / lowBright;
             neopixelBuf[startPos + 2] = (selectColors[color] & 0xff) / lowBright;
         }
-        pins.i2cWriteBuffer(RGB_ADDRESS, neopixelBuf);
+        pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS, neopixelBuf);
     }
 
     /**
@@ -311,13 +295,24 @@ namespace ovobotModules {
             pins.i2cWriteBuffer(SEG_ADDRESS, buf);
         }
     }
+
+    /**
+     * TODO: 触摸按键是否接触。
+     */
+    //% blockId=isTouchDown block="touchkey %module is touched?"
+    //% weight=65
+    export function isTouchDown(module: ModuleIndex): boolean{ 
+        pins.i2cWriteRegister(TOUCHKEY_ADDRESS + module, 0x00, 0x01);
+        let data = pins.i2cReadRegister(TOUCHKEY_ADDRESS + module, 0x01, NumberFormat.UInt8LE);
+        return (data == 1);
+    }
     
     /**
      * TODO: 读取触摸按键。
      */
-    //% blockId=read_touch block="read %module touch %index data"
+    //% blockId=isTouchDown block="touchkey %index %module is touched?"
     //% weight=65
-    export function readTouchData(module: ModuleIndex, index: TouchIndex): number{
+    export function isTouchDown(module: ModuleIndex, index: TouchIndex): boolean{
         pins.i2cWriteRegister(RGB_TOUCHKEY_ADDRESS, 0x00, 0x01);
         let data;
         if (index == 0) {
@@ -325,7 +320,7 @@ namespace ovobotModules {
         } else {
             data = pins.i2cReadRegister(RGB_TOUCHKEY_ADDRESS + module, 0x1A, NumberFormat.UInt8LE);
         }
-        return (data);
+        return (data == 1);
     }
 
     /**
@@ -351,18 +346,6 @@ namespace ovobotModules {
             neopixeBuf[startPos + 2] = (selectColors[color] & 0xff) / lowBright;
         }
         pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS, neopixeBuf);
-    }
-
-
-    /**
-     * TODO: 触摸按键是否接触。
-     */
-    //% blockId=isTouchDown block="touchkey %module is touched?"
-    //% weight=65
-    export function isTouchDown(module: ModuleIndex): boolean{ 
-        pins.i2cWriteRegister(TOUCHKEY_ADDRESS + module, 0x00, 0x01);
-        let data = pins.i2cReadRegister(TOUCHKEY_ADDRESS + module, 0x01, NumberFormat.UInt8LE);
-        return (data == 1);
     }
 
     /**
