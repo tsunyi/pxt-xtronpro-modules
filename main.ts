@@ -209,7 +209,7 @@ namespace ovobotModules {
                 }
                 j++;
             }
-            pins.i2cWriteBuffer(SEG_ADDRESS, buf);
+            pins.i2cWriteBuffer(SEG_ADDRESS + module, buf);
         }
     }
 
