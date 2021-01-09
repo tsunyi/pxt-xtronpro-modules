@@ -95,7 +95,7 @@ enum Color {
 //% color=190 weight=100 icon="\uf1ec" block="Ovobot Modules"
 namespace ovobotModules {
     const SONAR_ADDRESS = 0x52
-    const MOTOR_ADDRESS = 0x64
+    const SONAR_ADDRESS_2 = 0x58
     const SERVO_ADDRESS = 0x74
     const LED_ADDRESS = 0x53
     const SEG_ADDRESS = 0x6C
@@ -117,16 +117,7 @@ namespace ovobotModules {
     const KEY_ADDRESS = 0x30
     const lowBright = 8
     const selectColors = [0xff0000, 0xffa500, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff, 0x800080, 0xffffff, 0x000000]
-    let tempDevEnable = [false, false, false, false]
     let neopixeBuf = pins.createBuffer(26);
-    function sonicEnable() {
-        pins.i2cWriteRegister(SONAR_ADDRESS, 0x00, 0x01);
-    }
-
-    function tempEnable(address: number, index: number) { 
-        pins.i2cWriteRegister(address, 0x00, 0x01);
-        tempDevEnable[index] = true;
-    }
 
     function constract(val: number, minVal: number, maxVal: number): number {
         if (val > maxVal) {
@@ -161,9 +152,13 @@ namespace ovobotModules {
     //% blockId=read_distance block="read %module distance data"
     //% block weight=65
     export function readDistance(module: ModuleIndex): number {
-        sonicEnable();
-
-        let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
+        if (module == 0) {
+            pins.i2cWriteRegister(SONAR_ADDRESS + module, 0x00, 0x01);
+            let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
+        } else {
+            pins.i2cWriteRegister(SONAR_ADDRESS_2 + module, 0x00, 0x01);
+            let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS_2 + module, 0x01, NumberFormat.Int16LE);
+        }
         let distance = sonarVal / 58;
 
         return distance;
@@ -224,7 +219,7 @@ namespace ovobotModules {
     //% blockId=isTouchDown block="touchkey %index %module is touched?"
     //% weight=65
     export function isTouchDown(module: ModuleIndex, index: TouchIndex): boolean{
-        pins.i2cWriteRegister(RGB_TOUCHKEY_ADDRESS, 0x00, 0x01);
+        pins.i2cWriteRegister(RGB_TOUCHKEY_ADDRESS + module, 0x00, 0x01);
         let data;
         if (index == 0) {
             data = pins.i2cReadRegister(RGB_TOUCHKEY_ADDRESS + module, 0x19, NumberFormat.UInt8LE);
