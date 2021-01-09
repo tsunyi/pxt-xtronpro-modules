@@ -31,7 +31,7 @@
   "SubIndex.subModule2|block": "2",
   "SubIndex.subModule3|block": "3",
   "SubIndex.subModule4|block": "4",
-  "ovobotModules.controlNeopixels|block": "控制 灯条 %index 颜色 %color",
+  "ovobotModules.controlNeopixels|block": "控制 RGB %module 灯条 %index 颜色 %color",
   "ovobotModules.controlServoOutput|block": "控制舵机 %module 第 %submod 个旋转至 %angle 度",
   "ovobotModules.displaySegNumber|block": "控制数码管 %module 显示数值 %num",
   "ovobotModules.isTouchDown|block": "触摸 %module 按键 %index 被按下?",

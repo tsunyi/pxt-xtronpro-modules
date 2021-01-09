@@ -217,7 +217,7 @@ namespace ovobotModules {
     /**
      * TODO: 读取触摸按键。
      */
-    //% blockId=isTouchDown block="touchkey %index %module is touched?"
+    //% blockId=isTouchDown block="touchkey %module %index is touched?"
     //% weight=65
     export function isTouchDown(module: ModuleIndex, index: TouchIndex): boolean{
         pins.i2cWriteRegister(RGB_TOUCHKEY_ADDRESS + module, 0x00, 0x01);
@@ -233,7 +233,7 @@ namespace ovobotModules {
     /**
      * TODO: 控制RGB灯条。
      */
-    //% blockId=control_leds_output block="control neopixels %index color %color"
+    //% blockId=control_leds_output block="control neopixels %module %index color %color"
     //% weight=65
     export function controlNeopixels(module: ModuleIndex, index: LedIndex, color: Color) { 
         let startPos;
