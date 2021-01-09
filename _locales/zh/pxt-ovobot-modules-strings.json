@@ -35,7 +35,7 @@
   "ovobotModules.controlServoOutput|block": "控制舵机 %module 第 %submod 个旋转至 %angle 度",
   "ovobotModules.displaySegNumber|block": "控制数码管 %module 显示数值 %num",
   "ovobotModules.isTouchDown|block": "触摸按键 %index %module 被按下?",
-  "ovobotModules.readDistance|block": "超声波距离 cm",
+  "ovobotModules.readDistance|block": "超声波 %module 距离 cm",
   "ovobotModules.readPmData|block": "电位器 %module 数值",
   "ovobotModules.readSoilData|block": "土壤湿度 %module 数值",
   "ovobotModules.readlineData|block": "巡线 %module 数值",

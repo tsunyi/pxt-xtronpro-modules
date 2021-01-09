@@ -158,11 +158,12 @@ namespace ovobotModules {
     /**
      * TODO: 获取超声波传感器与前方障碍物的距离函数。
      */
+    //% block="read %module distance data"
     //% block weight=50
-    export function readDistance(): number {
+    export function readDistance(module: ModuleIndex): number {
         sonicEnable();
 
-        let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS, 0x01, NumberFormat.Int16LE);
+        let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
         let distance = sonarVal / 58;
 
         return distance;
@@ -299,7 +300,7 @@ namespace ovobotModules {
      */
     //% blockId=read_SoilHSensor block="read %module SoilHSensor data"
     //% weight=65
-    export function readSoilData(module: ModuleIndex): number{ 
+    export function readSoilHSensorData(module: ModuleIndex): number{ 
         pins.i2cWriteRegister(SOIL_ADDRESS + module, 0x00, 0x01);
         let data = pins.i2cReadRegister(SOIL_ADDRESS  + module , 0x01, NumberFormat.UInt8LE);
         return (data);
