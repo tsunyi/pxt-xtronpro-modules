@@ -152,12 +152,13 @@ namespace ovobotModules {
     //% blockId=read_distance block="read %module distance data"
     //% block weight=65
     export function readDistance(module: ModuleIndex): number {
+        let sonarVal;
         if (module == 0) {
             pins.i2cWriteRegister(SONAR_ADDRESS + module, 0x00, 0x01);
-            let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
+            sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
         } else {
             pins.i2cWriteRegister(SONAR_ADDRESS_2 + module, 0x00, 0x01);
-            let sonarVal = pins.i2cReadRegister(SONAR_ADDRESS_2 + module, 0x01, NumberFormat.Int16LE);
+            sonarVal = pins.i2cReadRegister(SONAR_ADDRESS_2 + module, 0x01, NumberFormat.Int16LE);
         }
         let distance = sonarVal / 58;
 
