@@ -20,24 +20,6 @@ enum TouchIndex {
     T2,
 }
 
-enum KeyIndex {
-    //% block="1"
-    T1,
-    //% block="2"
-    T2,
-    //% block="3"
-    T3,
-    //% block="4"
-    T4
-}
-
-enum PressIndex {
-    //% block="1"
-    T1,
-    //% block="2"
-    T2
-}
-
 enum SubIndex { 
     //% block="1"
     subModule1 = 1,
@@ -54,38 +36,8 @@ enum MesureContent {
     TempOnBoard,
     //% block="onboard humidity"
     HmOnBoard,
-    //% block="extend temp"
-    TempOffBoard
 }
 
-enum LedIndex {
-    //% block="all"
-    All,
-    //% block="1"
-    L1,
-    //% block="2"
-    L2,
-    //% block="3"
-    L3,
-    //% block="4"
-    L4,
-    //% block="5"
-    L5,
-    //% block="6"
-    L6,
-    //% block="7"
-    L7,
-    //% block="8"
-    L8,
-    //% block="9"
-    // L9,
-    // //% block="10"
-    // L10,
-    // //% block="11"
-    // L11,
-    // //% block="12"
-    // L12  
-}
 
 enum TouchLedIndex {
     //% block="all"
@@ -138,23 +90,7 @@ enum Color {
     Black
 }
 
-enum VoicePerson {
-    //% block="standardFemaleVoice"
-    standardFemaleVoice,
-    //% block="standardMaleVoice"
-    standardMaleVoice,
-    //% block="magnetismMaleVoice"
-    magnetismMaleVoice,
-    //% block="standardchildVoice"
-    standardchildVoice,
-}
 
-enum SpeechLang {
-    //% block="Chinese"
-    chinese,
-    //% block="English"
-    english,
-}
 
 //% color=190 weight=100 icon="\uf1ec" block="Ovobot Modules"
 namespace ovobotModules {
