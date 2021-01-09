@@ -39,7 +39,7 @@ enum MesureContent {
 }
 
 
-enum TouchLedIndex {
+enum LedIndex {
     //% block="all"
     All,
     //% block="1"
@@ -234,11 +234,11 @@ namespace ovobotModules {
     }
 
     /**
-     * TODO: 控制触摸RGB灯条。
+     * TODO: 控制RGB灯条。
      */
-    //% blockId=control_touch_leds_output block="control touch leds %index color %color"
+    //% blockId=control_leds_output block="control neopixels %index color %color"
     //% weight=65
-    export function controlTouchLeds(index: TouchLedIndex, color: Color) { 
+    export function controlNeopixels(index: LedIndex, color: Color) { 
         let startPos;
         //let ledBuf = pins.createBuffer(26);
         neopixeBuf[0] = 0;
@@ -265,29 +265,21 @@ namespace ovobotModules {
     //% weight=65
 
     export function readTempOrHumidity(module: ModuleIndex, measure: MesureContent): number{
-        let buf = pins.createBuffer(6);
-        let onboardTempValue = 400;
-        let extendTempValue;
+        let TempValue = 400;
         let humidityValue;
-        let address = TEMP_ADDRESS + module;
-        if (!tempDevEnable[module]) {
-            tempEnable(address, module);
-            return 9999;
-        } else { 
-            pins.i2cWriteRegister(address, 0x00, 0x01);
-            let res = pins.i2cReadBuffer(address, 6);//Buffer
-            onboardTempValue = -450 + 1750 * (res[0] << 8 | res[1]) / 65535;
-            humidityValue = 100 * (res[2] << 8 | res[3]) / 65535;
-            extendTempValue = (res[5] << 8 | res[4]) * 10 / 16.0;
-            if (measure == 0) {
-                return onboardTempValue * 0.1;
-            } else if (measure == 1) {
-                return humidityValue;
-            } else if (measure == 2) { 
-                return extendTempValue * 0.1;
-            }
-            return 9999;
-        }
+        pins.i2cWriteRegister(SEG_ADDRESS + module, 0x00, 0x01);
+        let data1 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x05, NumberFormat.UInt8LE);
+        let data2 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x06, NumberFormat.UInt8LE);
+        let data3 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x07, NumberFormat.UInt8LE);
+        let data4 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x08, NumberFormat.UInt8LE);
+        TempValue = -450 + 1750 * (data1 << 8 | data2) / 65535;
+        humidityValue = 100 * (data3 << 8 | data4) / 65535;
+        if (measure == 0) {
+            return TempValue * 0.1;
+        } else if (measure == 1) {
+            return humidityValue;
+        } 
+        return 9999;
     }
 
     /**
