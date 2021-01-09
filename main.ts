@@ -235,7 +235,7 @@ namespace ovobotModules {
      */
     //% blockId=control_leds_output block="control neopixels %index color %color"
     //% weight=65
-    export function controlNeopixels(index: LedIndex, color: Color) { 
+    export function controlNeopixels(module: ModuleIndex, index: LedIndex, color: Color) { 
         let startPos;
         //let ledBuf = pins.createBuffer(26);
         neopixeBuf[0] = 0;
@@ -252,7 +252,7 @@ namespace ovobotModules {
             neopixeBuf[startPos + 1] = ((selectColors[color] >> 16) & 0xff) / lowBright;
             neopixeBuf[startPos + 2] = (selectColors[color] & 0xff) / lowBright;
         }
-        pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS, neopixeBuf);
+        pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS + module, neopixeBuf);
     }
 
 
