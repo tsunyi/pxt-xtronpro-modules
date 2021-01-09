@@ -158,8 +158,8 @@ namespace ovobotModules {
     /**
      * TODO: 获取超声波传感器与前方障碍物的距离函数。
      */
-    //% block="read %module distance data"
-    //% block weight=50
+    //% blockId=read_distance block="read %module distance data"
+    //% block weight=65
     export function readDistance(module: ModuleIndex): number {
         sonicEnable();
 
