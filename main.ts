@@ -149,7 +149,7 @@ namespace ovobotModules {
     /**
      * TODO: 获取超声波传感器与前方障碍物的距离函数。
      */
-    //% blockId=read_distance block="read %module distance data"
+    //% block="read %module distance data"
     //% block weight=65
     export function readDistance(module: ModuleIndex): number {
         let sonarVal;
@@ -255,29 +255,32 @@ namespace ovobotModules {
         pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS, neopixeBuf);
     }
 
+
+
     /**
-     * TODO: 读取温湿度。
+     * TODO: 读取数温湿度。
      */
     //% blockId=read_temp_humidity block="read %module  %measure data"
     //% weight=65
 
     export function readTempOrHumidity(module: ModuleIndex, measure: MesureContent): number{
-        let TempValue = 400;
+        let onboardTempValue = 400;
         let humidityValue;
         pins.i2cWriteRegister(SEG_ADDRESS + module, 0x00, 0x01);
         let data1 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x05, NumberFormat.UInt8LE);
         let data2 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x06, NumberFormat.UInt8LE);
         let data3 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x07, NumberFormat.UInt8LE);
         let data4 = pins.i2cReadRegister(SEG_ADDRESS + module, 0x08, NumberFormat.UInt8LE);
-        TempValue = -450 + 1750 * (data1 << 8 | data2) / 65535;
+        onboardTempValue = -450 + 1750 * (data1 << 8 | data2) / 65535;
         humidityValue = 100 * (data3 << 8 | data4) / 65535;
         if (measure == 0) {
-            return TempValue * 0.1;
+            return onboardTempValue * 0.1;
         } else if (measure == 1) {
             return humidityValue;
         } 
         return 9999;
     }
+
 
     /**
      * TODO: 读取电位器。
