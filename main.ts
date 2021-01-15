@@ -174,11 +174,8 @@ namespace ovobotModules {
     export function controlServoOutput(module: ModuleIndex,submod:SubIndex, angle: number) {
         let buf = pins.createBuffer(8);
         let newangle = constract(angle, -90, 90);
-        let output = 19 + 24 * angle / 180.0;
-        buf[0] = 0x00;
-        buf[1] = submod;
-        buf[2] = output;
-        pins.i2cWriteBuffer(SERVO_ADDRESS + module, buf);
+        let output = 18.5 + 25 * angle / 180.0;
+        pins.i2cWriteRegister(SERVO_ADDRESS + module, submod, output);
     }
 
     /**
@@ -291,7 +288,12 @@ namespace ovobotModules {
     export function readPmData(module: ModuleIndex): number{
         pins.i2cWriteRegister(PM_ADDRESS + module, 0x00, 0x01);
         let data = pins.i2cReadRegister(PM_ADDRESS  + module , 0x01, NumberFormat.UInt8LE);
-        return (255 - data);
+        let val = Math.round((255 - data) * 106 / 255) - 3;
+        if (val < 0)
+            val = 0;
+        else if (val > 100)
+            val = 100;
+        return val;
     }
 
     /**
