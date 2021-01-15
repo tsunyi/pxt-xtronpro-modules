@@ -90,7 +90,12 @@ enum Color {
     Black
 }
 
-
+enum Scale {
+    //% block= "Decimal"
+    Decimal,
+    //% block= "Hexadecimal"
+    Hexadecimal
+}
 
 //% color=190 weight=100 icon="\uf1ec" block="Ovobot Modules"
 namespace ovobotModules {
@@ -181,9 +186,9 @@ namespace ovobotModules {
     /**
      * TODO: 显示数码管数值。
      */
-    //% blockId=display_seg_number block="control seg %module display number %num"
+    //% blockId=display_seg_number block="control seg %module display number %num with %scale scale"
     //% weight=65
-    export function displaySegNumber(module: ModuleIndex, num: number) {
+    export function displaySegNumber(module: ModuleIndex, num: number, scale: Scale) {
         let buf = pins.createBuffer(6);
         buf[0] = 0;
         buf[1] = 1;
@@ -191,21 +196,34 @@ namespace ovobotModules {
         buf[3] = 0;
         buf[4] = 0;
         buf[5] = 0;
-        let str_num = num.toString();
-        let len = str_num.length;
-        let j = 0;
-        if (validate(str_num)) { 
-            for (let i = len - 1; i >= 0; i--) { 
-                if (str_num.charAt(i) == '.') {
-                    buf[5 - j] = (str_num.charCodeAt(i - 1) - '0'.charCodeAt(0)) | 0x80;
-                    i--;
-                } else if (str_num.charAt(i) == "-") {
-                    buf[5 - j] = 0x40;
-                } else { 
-                    buf[5 - j] = str_num.charCodeAt(i) - '0'.charCodeAt(0);
+
+        if (scale == Scale.Decimal) {
+            let str_num = num.toString();
+            let len = str_num.length;
+            let j = 0;
+            if (validate(str_num)) { 
+                for (let i = len - 1; i >= 0; i--) { 
+                    if (str_num.charAt(i) == '.') {
+                        buf[5 - j] = (str_num.charCodeAt(i - 1) - '0'.charCodeAt(0)) | 0x80;
+                        i--;
+                    } else if (str_num.charAt(i) == "-") {
+                        buf[5 - j] = 0x40;
+                    } else { 
+                        buf[5 - j] = str_num.charCodeAt(i) - '0'.charCodeAt(0);
+                    }
+                    j++;
                 }
-                j++;
+                pins.i2cWriteBuffer(SEG_ADDRESS + module, buf);
             }
+        } else {
+            let hex_num = Math.round(num)
+            if (hex_num > 65535) {
+                hex_num = 65535
+            }
+            buf[2] = (hex_num >> 12) & 0x000F
+            buf[3] = (hex_num >> 8) & 0x000F
+            buf[4] = (hex_num >> 4) & 0x000F
+            buf[5] = (hex_num) & 0x000F
             pins.i2cWriteBuffer(SEG_ADDRESS + module, buf);
         }
     }
@@ -271,9 +289,9 @@ namespace ovobotModules {
         onboardTempValue = -450 + 1750 * (data1 << 8 | data2) / 65535;
         humidityValue = 100 * (data3 << 8 | data4) / 65535;
         if (measure == 0) {
-            return onboardTempValue * 0.1;
+            return Math.round(onboardTempValue) * 0.1;
         } else if (measure == 1) {
-            return humidityValue;
+            return Math.round(humidityValue);
         } 
         return 9999;
     }
