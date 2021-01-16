@@ -122,7 +122,6 @@ namespace ovobotModules {
     const KEY_ADDRESS = 0x30
     const lowBright = 8
     const selectColors = [0xff0000, 0xffa500, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff, 0x800080, 0xffffff, 0x000000]
-    let neopixeBuf = pins.createBuffer(26);
 
     function constract(val: number, minVal: number, maxVal: number): number {
         if (val > maxVal) {
@@ -250,24 +249,27 @@ namespace ovobotModules {
      */
     //% blockId=control_leds_output block="control neopixels %module %index color %color"
     //% weight=65
-    export function controlNeopixels(module: ModuleIndex, index: LedIndex, color: Color) { 
-        let startPos;
-        //let ledBuf = pins.createBuffer(26);
-        neopixeBuf[0] = 0;
-        neopixeBuf[1] = 1;
+    export function controlNeopixels(module: ModuleIndex, index: LedIndex, color: Color) {         
         if (index == 0) {
+            let neopixeBuf = pins.createBuffer(26);
+            neopixeBuf[0] = 0;
+            neopixeBuf[1] = 1;
             for (let i = 2; i < 24; i += 3) {
                 neopixeBuf[i] = ((selectColors[color] >> 8) & 0xff) / lowBright;
                 neopixeBuf[i + 1] = ((selectColors[color] >> 16) & 0xff) / lowBright;
                 neopixeBuf[i + 2] = (selectColors[color] & 0xff) / lowBright;
             }
+            pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS + module, neopixeBuf);
         } else { 
-            startPos = 2 + 3 * (index-1);
-            neopixeBuf[startPos] = ((selectColors[color] >> 8) & 0xff) / lowBright;
-            neopixeBuf[startPos + 1] = ((selectColors[color] >> 16) & 0xff) / lowBright;
-            neopixeBuf[startPos + 2] = (selectColors[color] & 0xff) / lowBright;
+            let neopixeBuf = pins.createBuffer(4);
+            neopixeBuf[0] = (index - 1) * 3 + 1;
+            neopixeBuf[1] = ((selectColors[color] >> 8) & 0xff) / lowBright;
+            neopixeBuf[2] = ((selectColors[color] >> 16) & 0xff) / lowBright;
+            neopixeBuf[3] = (selectColors[color] & 0xff) / lowBright;
+            pins.i2cWriteRegister(RGB_TOUCHKEY_ADDRESS + module, 0x00, 0x01);
+            pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS + module, neopixeBuf);
         }
-        pins.i2cWriteBuffer(RGB_TOUCHKEY_ADDRESS + module, neopixeBuf);
+        
     }
 
 
