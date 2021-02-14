@@ -157,16 +157,24 @@ namespace ovobotModules {
     //% block weight=65
     export function readDistance(module: ModuleIndex): number {
         let sonarVal;
-        if (module == 0) {
-            pins.i2cWriteRegister(SONAR_ADDRESS + module, 0x00, 0x01);
-            sonarVal = pins.i2cReadRegister(SONAR_ADDRESS + module, 0x01, NumberFormat.Int16LE);
-        } else {
-            pins.i2cWriteRegister(SONAR_ADDRESS_2 + module, 0x00, 0x01);
-            sonarVal = pins.i2cReadRegister(SONAR_ADDRESS_2 + module, 0x01, NumberFormat.Int16LE);
-        }
-        let distance = sonarVal / 58;
+
+        pins.i2cWriteRegister(SONAR_ADDRESS_2 + module, 0x00, 0x01);
+        sonarVal = pins.i2cReadRegister(SONAR_ADDRESS_2 + module, 0x01, NumberFormat.Int16LE);
+
+        let distance = Math.round(sonarVal / 58);
 
         return distance;
+    }
+
+    /**
+     * TODO: 读取声音响度。
+     */
+    //% blockId=read_loudness block="read %module loudness data"
+    //% weight=65
+    export function readLoudnessData(module: ModuleIndex): number{
+        pins.i2cWriteRegister(SONAR_ADDRESS_2 + module, 0x00, 0x01);
+        let data = pins.i2cReadRegister(SONAR_ADDRESS_2  + module , 0x03, NumberFormat.UInt8LE);
+        return (data);
     }
 
     /**
